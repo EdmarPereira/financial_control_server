@@ -14,6 +14,8 @@ const schema = new Schema({
   type: String,
   avatarType: String,
   value: Number,
+  month: String,
+  year: String,
 });
 
 module.exports = mongoose.model('data', schema);

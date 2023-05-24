@@ -9,6 +9,15 @@ exports.getAllData = async (req, res) => {
   }
 };
 
+exports.getAllDataByMonth = async (req, res) => {
+  try {
+    const data = await service.getAllDataByMonth(req.params.date);
+    res.json({ data, status: 'success' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.createData = async (req, res) => {
   try {
     const data = await service.createData(req.body);
