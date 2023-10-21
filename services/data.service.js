@@ -1,23 +1,84 @@
-const service = require('../models/transaction.model');
+const moment = require('moment');
+const service = require('../models/data.model');
 
-exports.getAllData = async () => {
-  return await service.find();
+async function filterAll(data, month, year) {
+  let totalRev = 0;
+  let totalExp = 0;
+
+  data.map((e) => {
+    if (e.type === 'Receita' && e.ignore === false) {
+      totalRev += e.value;
+    } else if (e.ignore === false) {
+      totalExp += e.value;
+    }
+  });
+
+  let currentMonthFilteredSorted = await data.sort((a, b) => {
+    return moment(a.date).diff(b.date);
+  });
+
+  currentMonthFilteredSorted = currentMonthFilteredSorted.reverse();
+
+  const obj = {
+    expenses: currentMonthFilteredSorted,
+    totalRev,
+    totalExp,
+    difference: totalRev - totalExp,
+    month,
+    year,
+  };
+
+  return obj;
+}
+
+exports.getData = async (params) => {
+  const { month, year, category } = params;
+  let query = {};
+
+  if (month !== undefined) {
+    query.month = month;
+  }
+  if (year !== undefined) {
+    query.year = year;
+  }
+  if (category !== undefined) {
+    query.avatarType = category;
+  }
+
+  const data = await service.find(query);
+
+  const values = await filterAll(data, month, year);
+
+  return values;
 };
 
-exports.getAllDataByMonth = async (params) => {
-  const obj = params.split('-');
-  const date = new Date(obj[0], obj[1] - 1, obj[2]); // 2009-11-10
-  const month = date.toLocaleString('pt-BR', { month: 'long' });
+exports.getMonths = async () => {
+  let arr = [];
 
-  console.log(
-    month.charAt(0).toUpperCase() + month.slice(1).toString(),
-    obj[0].toString()
-  );
+  let currMonthDesc = new Date().toLocaleString('pt-BR', { month: 'long' });
+  currMonthDesc =
+    currMonthDesc.charAt(0).toUpperCase() + currMonthDesc.slice(1).toString();
+  const currYear = new Date().toISOString().split('-');
+  let currMonth = currMonthDesc + ' - ' + currYear[0];
 
-  return await service.find({
-    month: month.charAt(0).toUpperCase() + month.slice(1).toString(),
-    year: obj[0].toString(),
+  const data = await service.find();
+  data.map((e) => {
+    let monthDesc = new Date(e.date).toLocaleString('pt-BR', { month: 'long' });
+    monthDesc =
+      monthDesc.charAt(0).toUpperCase() + monthDesc.slice(1).toString();
+    const year = new Date(e.date).toISOString().split('-')[0];
+    if (!arr.includes(monthDesc + ' - ' + year)) {
+      arr.push(monthDesc + ' - ' + year);
+    }
   });
+
+  if (!arr.includes(currMonth)) {
+    arr.push(currMonth);
+  }
+
+  arr.reverse();
+
+  return arr;
 };
 
 exports.createData = async (data) => {

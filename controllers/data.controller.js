@@ -1,18 +1,18 @@
 const service = require('../services/data.service');
 
-exports.getAllData = async (req, res) => {
+exports.getData = async (req, res) => {
   try {
-    const data = await service.getAllData();
+    const data = await service.getData(req.query);
     res.json({ data, status: 'success' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.getAllDataByMonth = async (req, res) => {
+exports.getMonths = async (req, res) => {
   try {
-    const data = await service.getAllDataByMonth(req.params.date);
-    res.json({ data, status: 'success' });
+    const arrMonths = await service.getMonths();
+    res.json({ arrMonths, status: 200 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

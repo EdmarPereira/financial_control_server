@@ -1,7 +1,7 @@
 const express = require("express");
 const {
-  getAllData,
-  getAllDataByMonth,
+  getData,
+  getMonths,
   createData,
   getByIdData,
   updateData,
@@ -19,8 +19,8 @@ const router = express.Router();
 //   next();
 // });
  
-router.route("/data/getAll").get(getAllData)
-router.route("/data/getAllByMonth/:date").get(getAllDataByMonth)
+router.route("/data/getData/").get(getData)
+router.route("/data/getMonths/").get(getMonths)
 router.route("/data/create").post(createData);
 router.route("/data/get/:id").get(getByIdData)
 router.route("/data/update/:id").put(updateData)
