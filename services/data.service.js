@@ -8,7 +8,7 @@ async function filterAll(data, month, year) {
   data.map((e) => {
     if (e.type === 'Receita' && e.ignore === false) {
       totalRev += e.value;
-    } else if (e.ignore === false) {
+    } else if (e.ignore === false && e.type !== 'Investimentos') {
       totalExp += e.value;
     }
   });
@@ -89,6 +89,7 @@ exports.getByIdData = async (id) => {
 };
 
 exports.updateData = async (id, data) => {
+  console.log(id, data)
   return await service.findByIdAndUpdate(id, data);
 };
 
