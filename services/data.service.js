@@ -102,28 +102,28 @@ exports.createData = async (data) => {
         const splitedDate = dateConverted.split(' ');
         await service.create({
           date,
-          description: 'teste1234567',
+          description: data.description,
           ignore: false,
-          type: 'Combustível',
-          avatarType: 'fuel',
-          value: 155,
+          type: data.type,
+          avatarType: data.avatarType,
+          value: data.value,
           year: splitedDate[4],
           month:
             splitedDate[2].charAt(0).toUpperCase() +
             splitedDate[2].slice(1).toString(),
         });
-        console.log({
-          date,
-          description: 'teste1234567',
-          ignore: false,
-          type: 'Combustível',
-          avatarType: 'fuel',
-          value: 155,
-          year: splitedDate[4],
-          month:
-            splitedDate[2].charAt(0).toUpperCase() +
-            splitedDate[2].slice(1).toString(),
-        });
+        // console.log({
+        //   date,
+        //   description: data.description,
+        //   ignore: false,
+        //   type: data.type,
+        //   avatarType: data.avatarType,
+        //   value: data.value,
+        //   year: splitedDate[4],
+        //   month:
+        //     splitedDate[2].charAt(0).toUpperCase() +
+        //     splitedDate[2].slice(1).toString(),
+        // });
       }
     }
   } catch (e) {
