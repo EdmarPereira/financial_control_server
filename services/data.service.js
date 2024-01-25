@@ -82,14 +82,62 @@ exports.getMonths = async () => {
 };
 
 exports.createData = async (data) => {
-  return await service.create(data);
+  try {
+    if (data.installment === 1) {
+      console.log(data);
+      return await service.create(data);
+    } else {
+      for (let index = 0; index < data.installment; index++) {
+        let date = new Date(data.date);
+        date.setMonth(date.getMonth() + index);
+
+        const shortDate = new Date(date).toISOString().substring(0, 10);
+        const obj = shortDate.split('-');
+        const dateFormated = new Date(obj[0], obj[1] - 1, obj[2]); // 2009-11-10
+        const dateConverted = dateFormated.toLocaleString('pt-BR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
+        const splitedDate = dateConverted.split(' ');
+        await service.create({
+          date,
+          description: 'teste1234567',
+          ignore: false,
+          type: 'Combustível',
+          avatarType: 'fuel',
+          value: 155,
+          year: splitedDate[4],
+          month:
+            splitedDate[2].charAt(0).toUpperCase() +
+            splitedDate[2].slice(1).toString(),
+        });
+        console.log({
+          date,
+          description: 'teste1234567',
+          ignore: false,
+          type: 'Combustível',
+          avatarType: 'fuel',
+          value: 155,
+          year: splitedDate[4],
+          month:
+            splitedDate[2].charAt(0).toUpperCase() +
+            splitedDate[2].slice(1).toString(),
+        });
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  // return await service.create(data);
 };
 exports.getByIdData = async (id) => {
   return await service.findById(id);
 };
 
 exports.updateData = async (id, data) => {
-  console.log(id, data)
+  console.log(id, data);
   return await service.findByIdAndUpdate(id, data);
 };
 
